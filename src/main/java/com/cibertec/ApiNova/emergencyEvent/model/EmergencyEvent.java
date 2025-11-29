@@ -1,0 +1,39 @@
+package com.cibertec.ApiNova.emergencyEvent.model;
+
+import com.cibertec.ApiNova.emergencyEvent.model.type.EmergencyEventStatus;
+import com.cibertec.ApiNova.user.model.User;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@Entity
+@Table(name = "emergency_events")
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmergencyEvent {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_type", nullable = false)
+    private EmergencyEventStatus status;
+
+    @Column(name = "activated_at", nullable = false)
+    private LocalDateTime activatedAt = LocalDateTime.now();
+
+    @Column(name = "closed_at")
+    private LocalDateTime closedAt;
+
+    @Column(name = "resolved")
+    private Boolean resolved = false;
+}
