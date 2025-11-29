@@ -1,11 +1,12 @@
+-- 1️⃣ Crear base de datos
 DROP DATABASE IF EXISTS nova_bd;
 CREATE DATABASE nova_bd;
 USE nova_bd;
 
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    full_name VARCHAR(200) NOT NULL,
-    email VARCHAR(200) NOT NULL UNIQUE,
+    full_name NVARCHAR(200) NOT NULL,
+    email NVARCHAR(200) NOT NULL UNIQUE,
     phone VARCHAR(20),
     password_hash VARCHAR(255) NOT NULL,
     status ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE'
@@ -14,12 +15,13 @@ CREATE TABLE users (
 CREATE TABLE contacts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    full_name VARCHAR(200) NOT NULL,
+    full_name NVARCHAR(200) NOT NULL,
     phone_number VARCHAR(20),
-    email VARCHAR(200) NOT NULL,
+    email NVARCHAR(200) NOT NULL,
     enable_whatsapp BOOL DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 
 CREATE TABLE emergency_events (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
