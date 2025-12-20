@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.cibertec.ApiNova.emergencyEvent.model.EmergencyEvent;
+import com.cibertec.ApiNova.emergencyEvent.model.type.EmergencyEventStatus;
 
 import java.util.List;
 
@@ -13,9 +14,6 @@ public interface EmergencyEventRepository extends JpaRepository<EmergencyEvent, 
     // Buscar eventos de emergencia por usuario
     List<EmergencyEvent> findByUserId(Long userId);
 
-    // Buscar eventos activos (no resueltos)
-    List<EmergencyEvent> findByResolvedFalse();
+    List<EmergencyEvent> findByStatus(EmergencyEventStatus status);
 
-    // Buscar eventos cerrados
-    List<EmergencyEvent> findByResolvedTrue();
 }
