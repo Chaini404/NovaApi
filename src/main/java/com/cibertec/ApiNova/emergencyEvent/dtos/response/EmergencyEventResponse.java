@@ -10,6 +10,5 @@ public record EmergencyEventResponse(
         Long userId,
         EmergencyEventStatus eventType,
         LocalDateTime activatedAt,
-        LocalDateTime closedAt,
-        Boolean resolved
+        LocalDateTime closedAt
 ) {}

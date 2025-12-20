@@ -65,7 +65,7 @@ public class EmergencyEventService {
         EmergencyEvent event = emergencyEventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        event.setResolved(true);
+        
         event.setClosedAt(java.time.LocalDateTime.now());
 
         EmergencyEvent updated = emergencyEventRepository.save(event);
