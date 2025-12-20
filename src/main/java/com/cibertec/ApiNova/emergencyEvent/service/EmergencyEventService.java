@@ -9,11 +9,13 @@ import com.cibertec.ApiNova.emergencyEvent.dtos.request.CreateEmergencyEventRequ
 import com.cibertec.ApiNova.emergencyEvent.dtos.response.EmergencyEventResponse;
 import com.cibertec.ApiNova.emergencyEvent.mapper.EmergencyEventMapper;
 import com.cibertec.ApiNova.emergencyEvent.model.EmergencyEvent;
+import com.cibertec.ApiNova.emergencyEvent.model.type.EmergencyEventStatus;
 import com.cibertec.ApiNova.emergencyEvent.repository.EmergencyEventRepository;
 import com.cibertec.ApiNova.user.model.User;
 import com.cibertec.ApiNova.user.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -72,21 +74,24 @@ public class EmergencyEventService {
         return emergencyEventMapper.toResponse(updated);
     }
 
-    @Transactional
+@Transactional(readOnly = true)
 public List<EmergencyEventResponse> getActiveEvents() {
-    return emergencyEventRepository.findByResolvedFalse()
+    return emergencyEventRepository
+            .findByStatus(EmergencyEventStatus.ACTIVE)
             .stream()
             .map(emergencyEventMapper::toResponse)
             .collect(Collectors.toList());
 }
 
-@Transactional
+@Transactional(readOnly = true)
 public List<EmergencyEventResponse> getResolvedEvents() {
-    return emergencyEventRepository.findByResolvedTrue()
+    return emergencyEventRepository
+            .findByStatus(EmergencyEventStatus.CLOSED)
             .stream()
             .map(emergencyEventMapper::toResponse)
             .collect(Collectors.toList());
 }
+
 
 
 }
