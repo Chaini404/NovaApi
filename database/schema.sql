@@ -26,12 +26,12 @@ CREATE TABLE contacts (
 CREATE TABLE emergency_events (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    event_type ENUM('TAP','VOICE') NOT NULL,
     activated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     closed_at TIMESTAMP NULL,
-    resolved BOOL DEFAULT FALSE,
+    status ENUM('ACTIVE','CLOSED') DEFAULT 'ACTIVE',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 
 CREATE TABLE emergency_locations (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,

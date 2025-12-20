@@ -25,17 +25,8 @@ INSERT INTO contacts (user_id, full_name, phone_number, email, enable_whatsapp) 
 (7, 'Mamá Pedro', '900777001', 'mama.pedro@gmail.com', TRUE);
 
 
-INSERT INTO emergency_events (user_id, event_type, activated_at, closed_at, resolved) VALUES
-(1, 'VOICE', NOW() - INTERVAL 2 HOUR, NULL, FALSE),
-(2, 'TAP', NOW() - INTERVAL 1 HOUR, NOW() - INTERVAL 30 MINUTE, TRUE),
-(3, 'VOICE', NOW() - INTERVAL 3 HOUR, NULL, FALSE),
-(4, 'TAP', NOW() - INTERVAL 5 HOUR, NOW() - INTERVAL 4 HOUR, TRUE),
-(5, 'VOICE', NOW() - INTERVAL 2 HOUR, NULL, FALSE),
-(6, 'TAP', NOW() - INTERVAL 6 HOUR, NOW() - INTERVAL 5 HOUR, TRUE),
-(7, 'VOICE', NOW() - INTERVAL 1 HOUR, NULL, FALSE),
-(8, 'TAP', NOW() - INTERVAL 3 HOUR, NOW() - INTERVAL 2 HOUR, TRUE),
-(9, 'VOICE', NOW() - INTERVAL 4 HOUR, NULL, FALSE),
-(10, 'TAP', NOW() - INTERVAL 2 HOUR, NOW() - INTERVAL 1 HOUR, TRUE);
+--tablas emergency events falta agregar más datos
+
 
 INSERT INTO emergency_locations (emergency_event_id, latitude, longitude) VALUES
 (1, -12.046374, -77.042793),

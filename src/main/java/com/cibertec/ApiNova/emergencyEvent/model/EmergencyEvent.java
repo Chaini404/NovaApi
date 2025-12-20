@@ -25,7 +25,7 @@ public class EmergencyEvent {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "event_type", nullable = false)
+    @Column(name = "status", nullable = false)
     private EmergencyEventStatus status;
 
     @Column(name = "activated_at", nullable = false)
@@ -34,6 +34,4 @@ public class EmergencyEvent {
     @Column(name = "closed_at")
     private LocalDateTime closedAt;
 
-    @Column(name = "resolved")
-    private Boolean resolved = false;
 }
