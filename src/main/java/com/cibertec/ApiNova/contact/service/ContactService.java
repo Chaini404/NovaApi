@@ -3,6 +3,7 @@ package com.cibertec.ApiNova.contact.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.cibertec.ApiNova.contact.dtos.request.CreateContactRequest;
@@ -12,6 +13,8 @@ import com.cibertec.ApiNova.contact.model.Contact;
 import com.cibertec.ApiNova.contact.repository.ContactRepository;
 import com.cibertec.ApiNova.user.model.User;
 import com.cibertec.ApiNova.user.repository.UserRepository;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,37 @@ public class ContactService {
     private final ContactMapper contactMapper;
     private final UserRepository userRepository;
 
+    // inicio - sobre twilio
+    @Value("${twilio.phoneNumber}")
+    private String fromPhone;
+
+    public void sendEmergencyAlert(User user, String location) {
+
+        Contact contact = contactRepository
+                .findByUserAndEmergencyContactTrue(user)
+                .orElseThrow(() -> new RuntimeException("Contacto de emergencia no configurado"));
+
+        if (contact.getPhoneNumber() == null) {
+            throw new RuntimeException("El contacto no tiene número telefónico");
+        }
+
+        String message = buildEmergencyMessage(user, location);
+
+        Message.creator(
+                new PhoneNumber(contact.getPhoneNumber()),
+                new PhoneNumber(fromPhone),
+                message
+        ).create();
+    }
+
+    private String buildEmergencyMessage(User user, String location) {
+        return "🚨 ALERTA DE EMERGENCIA 🚨\n\n"
+                + "Usuario: " + user.getFullName() + "\n"
+                + "Contacto: " + user.getEmail() + "\n"
+                + "Ubicación: " + location + "\n"
+                + "Hora: " + java.time.LocalDateTime.now();
+    }
+    // fin - twilio
     @Transactional
     public ContactResponse createContact(CreateContactRequest request) {
 
