@@ -10,7 +10,6 @@ import com.cibertec.ApiNova.contact.model.Contact;
 
 @Mapper(componentModel = "spring")
 public interface ContactMapper {
-    ContactMapper INSTANCE = Mappers.getMapper(ContactMapper.class);
 
     ContactResponse toResponse(Contact contact);
 
