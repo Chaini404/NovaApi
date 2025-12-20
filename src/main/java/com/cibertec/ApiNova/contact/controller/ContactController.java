@@ -41,26 +41,24 @@ public class ContactController {
 
     // inicio - sobre twilio
 
-    @PostMapping("/api/emergency/alert")
-    public String sendEmergency(
-            @RequestParam String location
-    ) {
-        // ⚠️ aquí normalmente sacas el usuario del JWT / SecurityContext
-        User user = getAuthenticatedUser();
+    @PostMapping("/emergency/alert")
+public String sendEmergencyAlert(@RequestParam String location) {
+    // ⚠️ Simulación: usuario demo, luego usar Spring Security
+    User user = getAuthenticatedUser();
 
-        contactService.sendEmergencyAlert(user, location);
+    contactService.sendEmergencyWhatsApp(user, location);
 
-        return "Alerta enviada correctamente";
-    }
+    return "Alerta WhatsApp enviada correctamente al demo";
+}
 
-    private User getAuthenticatedUser() {
-        // Simulación (luego se reemplaza con Spring Security)
-        User user = new User();
-        user.setId(1L);
-        user.setFullName("Usuario Demo");
-        user.setEmail("demo@email.com");
-        return user;
-    }
+private User getAuthenticatedUser() {
+    User user = new User();
+    user.setId(1L);
+    user.setFullName("Usuario Demo");
+    user.setEmail("demo@email.com");
+    return user;
+}
+
     // fin - sobre twilio
 
     @Operation(summary = "Get contact by ID")
