@@ -19,6 +19,7 @@ CREATE TABLE contacts (
     phone_number VARCHAR(20),
     email NVARCHAR(200) NOT NULL,
     enable_whatsapp BOOL DEFAULT TRUE,
+    emergency_contact BOOL DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

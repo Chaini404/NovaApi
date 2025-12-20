@@ -3,6 +3,7 @@ package com.cibertec.ApiNova.contact.controller;
 import com.cibertec.ApiNova.contact.dtos.request.CreateContactRequest;
 import com.cibertec.ApiNova.contact.dtos.response.ContactResponse;
 import com.cibertec.ApiNova.contact.service.ContactService;
+import com.cibertec.ApiNova.user.model.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,30 @@ public class ContactController {
         return ResponseEntity.ok(response);
     }
     */
+
+    // inicio - sobre twilio
+
+    @PostMapping("/api/emergency/alert")
+    public String sendEmergency(
+            @RequestParam String location
+    ) {
+        // ⚠️ aquí normalmente sacas el usuario del JWT / SecurityContext
+        User user = getAuthenticatedUser();
+
+        contactService.sendEmergencyAlert(user, location);
+
+        return "Alerta enviada correctamente";
+    }
+
+    private User getAuthenticatedUser() {
+        // Simulación (luego se reemplaza con Spring Security)
+        User user = new User();
+        user.setId(1L);
+        user.setFullName("Usuario Demo");
+        user.setEmail("demo@email.com");
+        return user;
+    }
+    // fin - sobre twilio
 
     @Operation(summary = "Get contact by ID")
     @GetMapping("/{id}")

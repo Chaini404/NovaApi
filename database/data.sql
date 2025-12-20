@@ -1,73 +1,51 @@
+USE nova_bd;
 
+-- ===========================
+-- 1️⃣ Tabla users
+-- ===========================
 INSERT INTO users (full_name, email, phone, password_hash, status) VALUES
-('Carlos Correa', 'carlos1@gmail.com', '999888001', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'ACTIVE'),
-('Ana Pérez', 'ana2@gmail.com', '999888002', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'ACTIVE'),
-('Luis Martínez', 'luis3@gmail.com', '999888003', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'ACTIVE'),
-('Marta Gómez', 'marta4@gmail.com', '999888004', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'INACTIVE'),
-('Jorge Ramírez', 'jorge5@gmail.com', '999888005', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'ACTIVE'),
-('Sofía Torres', 'sofia6@gmail.com', '999888006', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'ACTIVE'),
-('Pedro Castillo', 'pedro7@gmail.com', '999888007', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'INACTIVE'),
-('Lucía Díaz', 'lucia8@gmail.com', '999888008', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'ACTIVE'),
-('Diego Herrera', 'diego9@gmail.com', '999888009', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'ACTIVE'),
-('Carla Rojas', 'carla10@gmail.com', '999888010', '$2a$10$Tx5T9eJpZkZx0IZMMEZe7uWfHoTiaRt4v2tPzzmNdjwrojDvCrQhC', 'ACTIVE');
+('Juan Pérez', 'juan.perez@email.com', '987654321', 'hash123', 'ACTIVE'),
+('María López', 'maria.lopez@email.com', '987654322', 'hash234', 'ACTIVE'),
+('Carlos Ramírez', 'carlos.ramirez@email.com', '987654323', 'hash345', 'ACTIVE'),
+('Ana Torres', 'ana.torres@email.com', '987654324', 'hash456', 'ACTIVE'),
+('Luis García', 'luis.garcia@email.com', '987654325', 'hash567', 'ACTIVE');
 
+-- ===========================
+-- 2️⃣ Tabla contacts
+-- ===========================
+INSERT INTO contacts (user_id, full_name, phone_number, email, enable_whatsapp, emergency_contact) VALUES
+(1, 'Laura Pérez', '987111111', 'laura.perez@email.com', TRUE, TRUE),
+(2, 'Miguel López', '987222222', 'miguel.lopez@email.com', TRUE, FALSE),
+(3, 'Sofía Ramírez', '987333333', 'sofia.ramirez@email.com', FALSE, TRUE),
+(4, 'Andrés Torres', '987444444', 'andres.torres@email.com', TRUE, FALSE),
+(5, 'Valeria García', '987555555', 'valeria.garcia@email.com', FALSE, TRUE);
 
-INSERT INTO contacts (user_id, full_name, phone_number, email, enable_whatsapp) VALUES
-(1, 'Mamá Carlos', '900111001', 'mama.carlos@gmail.com', TRUE),
-(1, 'Hermano Carlos', '900111002', 'hermano.carlos@gmail.com', FALSE),
-(2, 'Padre Ana', '900222001', 'padre.ana@gmail.com', TRUE),
-(2, 'Hermana Ana', '900222002', 'hermana.ana@gmail.com', TRUE),
-(3, 'Mamá Luis', '900333001', 'mama.luis@gmail.com', TRUE),
-(3, 'Hermano Luis', '900333002', 'hermano.luis@gmail.com', FALSE),
-(4, 'Padre Marta', '900444001', 'padre.marta@gmail.com', TRUE),
-(5, 'Mamá Jorge', '900555001', 'mama.jorge@gmail.com', TRUE),
-(6, 'Hermana Sofía', '900666001', 'hermana.sofia@gmail.com', TRUE),
-(7, 'Mamá Pedro', '900777001', 'mama.pedro@gmail.com', TRUE);
+-- ===========================
+-- 3️⃣ Tabla emergency_events
+-- ===========================
+INSERT INTO emergency_events (user_id, activated_at, closed_at, status) VALUES
+(1, NOW(), NULL, 'ACTIVE'),
+(2, NOW() - INTERVAL 1 HOUR, NOW(), 'CLOSED'),
+(3, NOW() - INTERVAL 2 HOUR, NULL, 'ACTIVE'),
+(4, NOW() - INTERVAL 3 HOUR, NOW(), 'CLOSED'),
+(5, NOW() - INTERVAL 4 HOUR, NULL, 'ACTIVE');
 
+-- ===========================
+-- 4️⃣ Tabla emergency_locations
+-- ===========================
+INSERT INTO emergency_locations (emergency_event_id, latitude, longitude, captured_at) VALUES
+(1, -12.04318, -77.02824, NOW()),
+(2, -12.04637, -77.04279, NOW() - INTERVAL 1 HOUR),
+(3, -12.04845, -77.03199, NOW() - INTERVAL 2 HOUR),
+(4, -12.05012, -77.03789, NOW() - INTERVAL 3 HOUR),
+(5, -12.04200, -77.03300, NOW() - INTERVAL 4 HOUR);
 
---tablas emergency events falta agregar más datos
-
-
-INSERT INTO emergency_locations (emergency_event_id, latitude, longitude) VALUES
-(1, -12.046374, -77.042793),
-(1, -12.046400, -77.042800),
-(2, -12.045000, -77.043000),
-(2, -12.045100, -77.043100),
-(3, -12.047000, -77.041500),
-(3, -12.047100, -77.041600),
-(4, -12.048000, -77.044000),
-(4, -12.048100, -77.044100),
-(5, -12.049000, -77.045000),
-(5, -12.049100, -77.045100),
-(6, -12.050000, -77.046000),
-(6, -12.050100, -77.046100),
-(7, -12.051000, -77.047000),
-(7, -12.051100, -77.047100),
-(8, -12.052000, -77.048000),
-(8, -12.052100, -77.048100),
-(9, -12.053000, -77.049000),
-(9, -12.053100, -77.049100),
-(10, -12.054000, -77.050000),
-(10, -12.054100, -77.050100);
-
+-- ===========================
+-- 5️⃣ Tabla emergency_media
+-- ===========================
 INSERT INTO emergency_media (emergency_event_id, media_type, storage_url) VALUES
-(1, 'AUDIO', 'https://azurestorage.com/nova/audio_001.mp3'),
-(1, 'PHOTO', 'https://azurestorage.com/nova/photo_001.jpg'),
-(2, 'AUDIO', 'https://azurestorage.com/nova/audio_002.mp3'),
-(2, 'PHOTO', 'https://azurestorage.com/nova/photo_002.jpg'),
-(3, 'AUDIO', 'https://azurestorage.com/nova/audio_003.mp3'),
-(3, 'PHOTO', 'https://azurestorage.com/nova/photo_003.jpg'),
-(4, 'AUDIO', 'https://azurestorage.com/nova/audio_004.mp3'),
-(4, 'PHOTO', 'https://azurestorage.com/nova/photo_004.jpg'),
-(5, 'AUDIO', 'https://azurestorage.com/nova/audio_005.mp3'),
-(5, 'PHOTO', 'https://azurestorage.com/nova/photo_005.jpg'),
-(6, 'AUDIO', 'https://azurestorage.com/nova/audio_006.mp3'),
-(6, 'PHOTO', 'https://azurestorage.com/nova/photo_006.jpg'),
-(7, 'AUDIO', 'https://azurestorage.com/nova/audio_007.mp3'),
-(7, 'PHOTO', 'https://azurestorage.com/nova/photo_007.jpg'),
-(8, 'AUDIO', 'https://azurestorage.com/nova/audio_008.mp3'),
-(8, 'PHOTO', 'https://azurestorage.com/nova/photo_008.jpg'),
-(9, 'AUDIO', 'https://azurestorage.com/nova/audio_009.mp3'),
-(9, 'PHOTO', 'https://azurestorage.com/nova/photo_009.jpg'),
-(10, 'AUDIO', 'https://azurestorage.com/nova/audio_010.mp3'),
-(10, 'PHOTO', 'https://azurestorage.com/nova/photo_010.jpg');
+(1, 'PHOTO', 'https://storage.example.com/media1.jpg'),
+(2, 'VIDEO', 'https://storage.example.com/media2.mp4'),
+(3, 'AUDIO', 'https://storage.example.com/media3.mp3'),
+(4, 'PHOTO', 'https://storage.example.com/media4.jpg'),
+(5, 'VIDEO', 'https://storage.example.com/media5.mp4');

@@ -32,4 +32,8 @@ public class Contact {
 
     @Column(name = "enable_whatsapp")
     private Boolean enableWhatsapp = true;
+
+   @Column(name = "is_emergency_contact")
+private Boolean emergencyContact = false;
+
 }

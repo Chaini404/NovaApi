@@ -6,5 +6,6 @@ public record ContactResponse(
         String fullName,
         String phoneNumber,
         String email,
-        Boolean enableWhatsapp
+        Boolean enableWhatsapp,
+        Boolean emergencyContact
 ) {}
