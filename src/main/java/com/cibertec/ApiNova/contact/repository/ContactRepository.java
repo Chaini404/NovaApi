@@ -17,7 +17,10 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     // Opcional: buscar contactos por correo electrónico
     List<Contact> findByEmail(String email);
 
-    //buscar el contacto de emergencia de un usuario
-    Optional<Contact> findByUserAndEmergencyContactTrue(User user);
+    // Trae todos los contactos marcados como emergencia de un usuario
+    List<Contact> findByUserAndEmergencyContactTrue(User user);
+
+    // Opcional: traer solo uno por email (para demo/testing)
+    List<Contact> findByUserAndEmergencyContactTrueAndEmail(User user, String email);
 
 }

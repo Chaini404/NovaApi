@@ -31,31 +31,56 @@ public class ContactService {
     @Value("${twilio.phoneNumber}")
     private String fromPhone;
 
-    public void sendEmergencyAlert(User user, String location) {
+    
+    public void sendEmergencyWhatsApp(User user, String location) {
 
-        Contact contact = contactRepository
-                .findByUserAndEmergencyContactTrue(user)
-                .orElseThrow(() -> new RuntimeException("Contacto de emergencia no configurado"));
+        // Obtener todos los contactos de emergencia
+        List<Contact> contacts = contactRepository.findByUserAndEmergencyContactTrue(user);
 
-        if (contact.getPhoneNumber() == null) {
-            throw new RuntimeException("El contacto no tiene número telefónico");
+        // Por ahora solo enviamos al demo
+        contacts = contacts.stream()
+                .filter(c -> "demo@email.com".equals(c.getEmail())) // cambiar por tu contacto demo
+                .toList();
+
+        if (contacts.isEmpty()) {
+            throw new RuntimeException("Contacto de emergencia demo no encontrado");
         }
 
         String message = buildEmergencyMessage(user, location);
 
-        Message.creator(
-                new PhoneNumber(contact.getPhoneNumber()),
-                new PhoneNumber(fromPhone),
-                message
-        ).create();
+        for (Contact contact : contacts) {
+            if (contact.getPhoneNumber() != null) {
+                String to = "whatsapp:" + formatPhoneNumber(contact.getPhoneNumber());
+
+                try {
+                    Message msg = Message.creator(
+                            new PhoneNumber(to),
+                            new PhoneNumber(fromPhone),
+                            message
+                    ).create();
+
+                    System.out.println("Mensaje WhatsApp enviado a " + contact.getPhoneNumber() + " SID: " + msg.getSid());
+                } catch (Exception e) {
+                    System.err.println("Error enviando a " + contact.getPhoneNumber() + ": " + e.getMessage());
+                }
+            }
+        }
     }
 
     private String buildEmergencyMessage(User user, String location) {
         return "🚨 ALERTA DE EMERGENCIA 🚨\n\n"
                 + "Usuario: " + user.getFullName() + "\n"
-                + "Contacto: " + user.getEmail() + "\n"
+                + "Email: " + user.getEmail() + "\n"
                 + "Ubicación: " + location + "\n"
                 + "Hora: " + java.time.LocalDateTime.now();
+    }
+
+    private String formatPhoneNumber(String number) {
+        String cleanNumber = number.trim();
+        if (!cleanNumber.startsWith("+")) {
+            cleanNumber = "+51" + cleanNumber; // Cambiar según país si quieres
+        }
+        return cleanNumber;
     }
     // fin - twilio
     @Transactional
