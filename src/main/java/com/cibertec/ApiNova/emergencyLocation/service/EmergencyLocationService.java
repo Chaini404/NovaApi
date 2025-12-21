@@ -1,5 +1,7 @@
 package com.cibertec.ApiNova.emergencyLocation.service;
 
+import com.cibertec.ApiNova.emergencyEvent.model.EmergencyEvent;
+import com.cibertec.ApiNova.emergencyEvent.repository.EmergencyEventRepository;
 import com.cibertec.ApiNova.emergencyLocation.dtos.request.CreateEmergencyLocationRequest;
 import com.cibertec.ApiNova.emergencyLocation.dtos.response.EmergencyLocationResponse;
 import com.cibertec.ApiNova.emergencyLocation.mapper.EmergencyLocationMapper;
@@ -19,19 +21,25 @@ public class EmergencyLocationService {
 
     private final EmergencyLocationRepository emergencyLocationRepository;
     private final EmergencyLocationMapper emergencyLocationMapper;
+    private final EmergencyEventRepository emergencyEventRepository;
 
-  
     @Transactional
     public EmergencyLocationResponse createLocation(CreateEmergencyLocationRequest request) {
         EmergencyLocation location = emergencyLocationMapper.toEntity(request);
+
+        // Asociar el evento de emergencia (FK obligatoria)
+        EmergencyEvent event = emergencyEventRepository.findById(request.emergencyEventId())
+                .orElseThrow(() -> new RuntimeException("EmergencyEvent not found: " + request.emergencyEventId()));
+        location.setEmergencyEvent(event);
+
         EmergencyLocation saved = emergencyLocationRepository.save(location);
         return emergencyLocationMapper.toResponse(saved);
     }
 
     // ------------------------------------------------------------
-    // UPDATE
+    // UPDATE (comentado por ahora)
     // ------------------------------------------------------------
-    /* 
+    /*
     @Transactional
     public EmergencyLocationResponse updateLocation(Long locationId, UpdateEmergencyLocationRequest request) {
         EmergencyLocation location = emergencyLocationRepository.findById(locationId)
@@ -39,13 +47,12 @@ public class EmergencyLocationService {
 
         location.setLatitude(request.latitude());
         location.setLongitude(request.longitude());
-        location.setAddress(request.address());
-        location.setDescription(request.description());
 
         EmergencyLocation updated = emergencyLocationRepository.save(location);
         return emergencyLocationMapper.toResponse(updated);
     }
     */
+
     @Transactional
     public EmergencyLocationResponse getLocationById(Long locationId) {
         EmergencyLocation location = emergencyLocationRepository.findById(locationId)
