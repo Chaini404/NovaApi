@@ -27,62 +27,7 @@ public class ContactService {
     private final ContactMapper contactMapper;
     private final UserRepository userRepository;
 
-    // inicio - sobre twilio
-    @Value("${twilio.phoneNumber}")
-    private String fromPhone;
 
-    
-    public void sendEmergencyWhatsApp(User user, String location) {
-
-        // Obtener todos los contactos de emergencia
-        List<Contact> contacts = contactRepository.findByUserAndEmergencyContactTrue(user);
-
-        // Por ahora solo enviamos al demo
-        contacts = contacts.stream()
-                .filter(c -> "demo@email.com".equals(c.getEmail())) // cambiar por tu contacto demo
-                .toList();
-
-        if (contacts.isEmpty()) {
-            throw new RuntimeException("Contacto de emergencia demo no encontrado");
-        }
-
-        String message = buildEmergencyMessage(user, location);
-
-        for (Contact contact : contacts) {
-            if (contact.getPhoneNumber() != null) {
-                String to = "whatsapp:" + formatPhoneNumber(contact.getPhoneNumber());
-
-                try {
-                    Message msg = Message.creator(
-                            new PhoneNumber(to),
-                            new PhoneNumber(fromPhone),
-                            message
-                    ).create();
-
-                    System.out.println("Mensaje WhatsApp enviado a " + contact.getPhoneNumber() + " SID: " + msg.getSid());
-                } catch (Exception e) {
-                    System.err.println("Error enviando a " + contact.getPhoneNumber() + ": " + e.getMessage());
-                }
-            }
-        }
-    }
-
-    private String buildEmergencyMessage(User user, String location) {
-        return "🚨 ALERTA DE EMERGENCIA 🚨\n\n"
-                + "Usuario: " + user.getFullName() + "\n"
-                + "Email: " + user.getEmail() + "\n"
-                + "Ubicación: " + location + "\n"
-                + "Hora: " + java.time.LocalDateTime.now();
-    }
-
-    private String formatPhoneNumber(String number) {
-        String cleanNumber = number.trim();
-        if (!cleanNumber.startsWith("+")) {
-            cleanNumber = "+51" + cleanNumber; // Cambiar según país si quieres
-        }
-        return cleanNumber;
-    }
-    // fin - twilio
     @Transactional
     public ContactResponse createContact(CreateContactRequest request) {
 

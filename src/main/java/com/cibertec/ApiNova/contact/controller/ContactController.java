@@ -39,17 +39,6 @@ public class ContactController {
     }
     */
 
-    // inicio - sobre twilio
-
-    @PostMapping("/emergency/alert")
-public String sendEmergencyAlert(@RequestParam String location) {
-    // ⚠️ Simulación: usuario demo, luego usar Spring Security
-    User user = getAuthenticatedUser();
-
-    contactService.sendEmergencyWhatsApp(user, location);
-
-    return "Alerta WhatsApp enviada correctamente al demo";
-}
 
 private User getAuthenticatedUser() {
     User user = new User();
