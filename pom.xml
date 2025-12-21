@@ -97,7 +97,7 @@
     <version>${mapstruct.version}</version>
     <scope>provided</scope>
 </dependency>
-
+    
 <!--twilio para enviar mensaje al whassap-->
 <dependency>
     <groupId>com.twilio.sdk</groupId>
