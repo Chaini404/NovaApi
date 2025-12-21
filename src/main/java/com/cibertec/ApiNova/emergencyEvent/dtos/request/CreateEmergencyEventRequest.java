@@ -10,5 +10,5 @@ public record CreateEmergencyEventRequest(
         Long userId,
 
         @NotNull(message = "Event type is required")
-        EmergencyEventStatus eventType
+        EmergencyEventStatus status
 ) {}
