@@ -95,7 +95,7 @@
     <groupId>org.mapstruct</groupId>
     <artifactId>mapstruct-processor</artifactId>
     <version>${mapstruct.version}</version>
-    <scope>provided</scope>
+<!-- SIN scope -->
 </dependency>
     
 <!--twilio para enviar mensaje al whassap-->
@@ -107,11 +107,6 @@
 
 
 
-<dependency>
-    <groupId>org.springdoc</groupId>
-    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.2.0</version>
-</dependency>
 
 
         <!-- Spring Boot Test -->
@@ -121,13 +116,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Devtools -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
+      
     </dependencies>
 
     <build>
@@ -154,6 +143,18 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+
+            <plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <mainClass>com.cibertec.ApiNova.ApiNovaApplication</mainClass>
+    </configuration>
+</plugin>
+
+
+
 
             <!-- Spring Boot plugin -->
             <plugin>
