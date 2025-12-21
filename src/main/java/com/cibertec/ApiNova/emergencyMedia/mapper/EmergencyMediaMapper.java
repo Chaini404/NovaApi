@@ -1,21 +1,32 @@
 package com.cibertec.ApiNova.emergencyMedia.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import com.cibertec.ApiNova.emergencyMedia.dtos.request.CreateEmergencyMediaRequest;
 import com.cibertec.ApiNova.emergencyMedia.dtos.response.EmergencyMediaResponse;
 import com.cibertec.ApiNova.emergencyMedia.model.EmergencyMedia;
 
-@Mapper(componentModel = "spring")
-public interface EmergencyMediaMapper {
+@Component
+public class EmergencyMediaMapper {
 
-    EmergencyMediaMapper INSTANCE = Mappers.getMapper(EmergencyMediaMapper.class);
+    // Convierte entidad a response
+    public EmergencyMediaResponse toResponse(EmergencyMedia media) {
+        Long emergencyEventId = media.getEmergencyEvent() != null ? media.getEmergencyEvent().getId() : null;
 
-    EmergencyMediaResponse toResponse(EmergencyMedia emergencyMedia);
+        return new EmergencyMediaResponse(
+            media.getId(),
+            emergencyEventId,
+            media.getMediaType(),
+            media.getStorageUrl()
+        );
+    }
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "emergencyEvent", ignore = true) // se seteará en el service
-    EmergencyMedia toEntity(CreateEmergencyMediaRequest request);
+    // Convierte request a entidad
+    public EmergencyMedia toEntity(CreateEmergencyMediaRequest request) {
+        EmergencyMedia media = new EmergencyMedia();
+        media.setMediaType(request.mediaType());
+        media.setStorageUrl(request.storageUrl());
+        // emergencyEvent se asigna en el service
+        return media;
+    }
 }

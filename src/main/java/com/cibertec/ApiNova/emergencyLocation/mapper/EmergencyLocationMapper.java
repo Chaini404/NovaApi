@@ -1,22 +1,34 @@
 package com.cibertec.ApiNova.emergencyLocation.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import com.cibertec.ApiNova.emergencyLocation.dtos.request.CreateEmergencyLocationRequest;
 import com.cibertec.ApiNova.emergencyLocation.dtos.response.EmergencyLocationResponse;
 import com.cibertec.ApiNova.emergencyLocation.model.EmergencyLocation;
 
-@Mapper(componentModel = "spring")
-public interface EmergencyLocationMapper {
+@Component
+public class EmergencyLocationMapper {
 
-    EmergencyLocationMapper INSTANCE = Mappers.getMapper(EmergencyLocationMapper.class);
+    // Convierte entidad a response
+    public EmergencyLocationResponse toResponse(EmergencyLocation location) {
+        Long emergencyEventId = location.getEmergencyEvent() != null ? location.getEmergencyEvent().getId() : null;
 
-    EmergencyLocationResponse toResponse(EmergencyLocation emergencyLocation);
+        return new EmergencyLocationResponse(
+            location.getId(),
+            emergencyEventId,
+            location.getLatitude(),
+            location.getLongitude(),
+            location.getCapturedAt()
+        );
+    }
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "capturedAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "emergencyEvent", ignore = true) // se seteará en el service
-    EmergencyLocation toEntity(CreateEmergencyLocationRequest request);
+    // Convierte request a entidad
+    public EmergencyLocation toEntity(CreateEmergencyLocationRequest request) {
+        EmergencyLocation location = new EmergencyLocation();
+        location.setLatitude(request.latitude());
+        location.setLongitude(request.longitude());
+        location.setCapturedAt(java.time.LocalDateTime.now());
+        // emergencyEvent se asigna en el service
+        return location;
+    }
 }
