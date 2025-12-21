@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class EmergencyMediaController {
 
     @Operation(summary = "Create a new emergency media record")
     @PostMapping
-    public ResponseEntity<EmergencyMediaResponse> createMedia(
-            @RequestBody CreateEmergencyMediaRequest request) {
+        public ResponseEntity<EmergencyMediaResponse> createMedia(
+            @Valid @RequestBody CreateEmergencyMediaRequest request) {
 
         EmergencyMediaResponse response = emergencyMediaService.createMedia(request);
         return ResponseEntity.ok(response);

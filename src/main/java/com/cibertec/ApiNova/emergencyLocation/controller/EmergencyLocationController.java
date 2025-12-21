@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class EmergencyLocationController {
 
     @Operation(summary = "Create a new emergency location")
     @PostMapping
-    public ResponseEntity<EmergencyLocationResponse> createLocation(
-            @RequestBody CreateEmergencyLocationRequest request) {
+        public ResponseEntity<EmergencyLocationResponse> createLocation(
+            @Valid @RequestBody CreateEmergencyLocationRequest request) {
 
         EmergencyLocationResponse response = emergencyLocationService.createLocation(request);
         return ResponseEntity.ok(response);
