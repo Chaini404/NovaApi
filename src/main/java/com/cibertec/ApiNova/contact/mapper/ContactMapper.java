@@ -31,6 +31,8 @@ public class ContactMapper {
         contact.setPhoneNumber(request.phoneNumber());
         contact.setEmail(request.email());
         contact.setEnableWhatsapp(request.enableWhatsapp() != null ? request.enableWhatsapp() : true);
+        // Marcar como contacto de emergencia por defecto para uso en alertas
+        contact.setEmergencyContact(true);
         // user se asigna en el service
         return contact;
     }
