@@ -4,6 +4,7 @@ import com.cibertec.ApiNova.contact.dtos.request.CreateContactRequest;
 import com.cibertec.ApiNova.contact.dtos.response.ContactResponse;
 import com.cibertec.ApiNova.contact.service.ContactService;
 import com.cibertec.ApiNova.user.model.User;
+import com.cibertec.ApiNova.user.repository.UserRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 public class ContactController {
 
     private final ContactService contactService;
+    private final UserRepository userRepository;
 
     @Operation(summary = "Create a new contact")
     @PostMapping
@@ -42,22 +44,14 @@ public class ContactController {
     // inicio - sobre twilio
 
     @PostMapping("/emergency/alert")
-public String sendEmergencyAlert(@RequestParam String location) {
-    // ⚠️ Simulación: usuario demo, luego usar Spring Security
-    User user = getAuthenticatedUser();
+    public String sendEmergencyAlert(@RequestParam String location, @RequestParam Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    contactService.sendEmergencyWhatsApp(user, location);
+        contactService.sendEmergencyWhatsApp(user, location);
 
-    return "Alerta WhatsApp enviada correctamente al demo";
-}
-
-private User getAuthenticatedUser() {
-    User user = new User();
-    user.setId(1L);
-    user.setFullName("Usuario Demo");
-    user.setEmail("demo@email.com");
-    return user;
-}
+        return "Alerta WhatsApp enviada correctamente";
+    }
 
     // fin - sobre twilio
 

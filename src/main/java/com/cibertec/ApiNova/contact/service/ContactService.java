@@ -30,12 +30,19 @@ public class ContactService {
     // inicio - sobre twilio
     @Value("${twilio.phoneNumber}")
     private String fromPhone;
+    @Value("${twilio.defaultCountryCode:+51}")
+    private String defaultCountryCode;
 
     
     public void sendEmergencyWhatsApp(User user, String location) {
 
         // Obtener todos los contactos de emergencia del usuario
         List<Contact> contacts = contactRepository.findByUserAndEmergencyContactTrue(user);
+
+        // Filtrar solo contactos con WhatsApp habilitado
+        contacts = contacts.stream()
+            .filter(c -> Boolean.TRUE.equals(c.getEnableWhatsapp()))
+            .toList();
 
         if (contacts.isEmpty()) {
             throw new RuntimeException("No hay contactos de emergencia configurados para el usuario");
@@ -45,7 +52,7 @@ public class ContactService {
 
         for (Contact contact : contacts) {
             if (contact.getPhoneNumber() != null) {
-                String to = "whatsapp:" + formatPhoneNumber(contact.getPhoneNumber());
+            String to = "whatsapp:" + formatPhoneNumber(contact.getPhoneNumber());
 
                 try {
                     Message msg = Message.creator(
@@ -71,11 +78,22 @@ public class ContactService {
     }
 
     private String formatPhoneNumber(String number) {
-        String cleanNumber = number.trim();
-        if (!cleanNumber.startsWith("+")) {
-            cleanNumber = "+51" + cleanNumber; // Cambiar según país si quieres
+        if (number == null || number.isBlank()) return number;
+        String trimmed = number.trim();
+        boolean hadPlus = trimmed.startsWith("+");
+        // Mantener solo dígitos
+        String digits = trimmed.replaceAll("[^0-9]", "");
+        String code = defaultCountryCode != null ? defaultCountryCode : "+51";
+        String codeDigits = code.replaceAll("[^0-9]", "");
+
+        if (digits.isEmpty()) return code + digits;
+
+        // Si ya tenía + o ya incluye el código de país al inicio, solo asegurar el +
+        if (hadPlus || (!codeDigits.isEmpty() && digits.startsWith(codeDigits))) {
+            return "+" + digits;
         }
-        return cleanNumber;
+        // Agregar código por defecto
+        return "+" + codeDigits + digits;
     }
     // fin - twilio
     @Transactional
