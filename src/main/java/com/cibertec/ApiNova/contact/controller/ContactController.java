@@ -9,10 +9,13 @@ import com.cibertec.ApiNova.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import com.cibertec.ApiNova.contact.dtos.response.EmergencyAlertResult;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -44,13 +47,19 @@ public class ContactController {
     // inicio - sobre twilio
 
     @PostMapping("/emergency/alert")
-    public String sendEmergencyAlert(@RequestParam String location, @RequestParam Long userId) {
+    public ResponseEntity<EmergencyAlertResult> sendEmergencyAlert(@RequestParam String location, @RequestParam Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        contactService.sendEmergencyWhatsApp(user, location);
+        EmergencyAlertResult result = contactService.sendEmergencyWhatsApp(user, location);
 
-        return "Alerta WhatsApp enviada correctamente";
+        if (result.getTotalRecipients() == 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+        if (result.getSent() == 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+        return ResponseEntity.ok(result);
     }
 
     // fin - sobre twilio
