@@ -34,16 +34,11 @@ public class ContactService {
     
     public void sendEmergencyWhatsApp(User user, String location) {
 
-        // Obtener todos los contactos de emergencia
+        // Obtener todos los contactos de emergencia del usuario
         List<Contact> contacts = contactRepository.findByUserAndEmergencyContactTrue(user);
 
-        // Por ahora solo enviamos al demo
-        contacts = contacts.stream()
-                .filter(c -> "demo@email.com".equals(c.getEmail())) // cambiar por tu contacto demo
-                .toList();
-
         if (contacts.isEmpty()) {
-            throw new RuntimeException("Contacto de emergencia demo no encontrado");
+            throw new RuntimeException("No hay contactos de emergencia configurados para el usuario");
         }
 
         String message = buildEmergencyMessage(user, location);
