@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import com.cibertec.ApiNova.contact.dtos.response.EmergencyAlertResult;
+import com.cibertec.ApiNova.contact.dtos.response.RecipientResult;
 
 import com.cibertec.ApiNova.contact.dtos.request.CreateContactRequest;
 import com.cibertec.ApiNova.contact.dtos.response.ContactResponse;
@@ -34,7 +36,7 @@ public class ContactService {
     private String defaultCountryCode;
 
     
-    public void sendEmergencyWhatsApp(User user, String location) {
+    public EmergencyAlertResult sendEmergencyWhatsApp(User user, String location) {
 
         // Obtener todos los contactos de emergencia del usuario
         List<Contact> contacts = contactRepository.findByUserAndEmergencyContactTrue(user);
@@ -44,15 +46,23 @@ public class ContactService {
             .filter(c -> Boolean.TRUE.equals(c.getEnableWhatsapp()))
             .toList();
 
+        EmergencyAlertResult result = new EmergencyAlertResult();
+        result.setTotalRecipients(contacts.size());
+        result.setAttempted(0);
+        result.setSent(0);
+        result.setFailed(0);
         if (contacts.isEmpty()) {
-            throw new RuntimeException("No hay contactos de emergencia configurados para el usuario");
+            return result;
         }
 
         String message = buildEmergencyMessage(user, location);
 
         for (Contact contact : contacts) {
             if (contact.getPhoneNumber() != null) {
-            String to = "whatsapp:" + formatPhoneNumber(contact.getPhoneNumber());
+                String normalized = formatPhoneNumber(contact.getPhoneNumber());
+                String to = "whatsapp:" + normalized;
+                RecipientResult recipient = new RecipientResult(contact.getFullName(), contact.getPhoneNumber(), normalized);
+                result.setAttempted(result.getAttempted() + 1);
 
                 try {
                     Message msg = Message.creator(
@@ -61,12 +71,22 @@ public class ContactService {
                             message
                     ).create();
 
-                    System.out.println("Mensaje WhatsApp enviado a " + contact.getPhoneNumber() + " SID: " + msg.getSid());
+                    recipient.setSent(true);
+                    recipient.setSid(msg.getSid());
+                    result.addRecipient(recipient);
+                    result.setSent(result.getSent() + 1);
+                    System.out.println("Mensaje WhatsApp enviado a " + normalized + " SID: " + msg.getSid());
                 } catch (Exception e) {
-                    System.err.println("Error enviando a " + contact.getPhoneNumber() + ": " + e.getMessage());
+                    recipient.setSent(false);
+                    recipient.setError(e.getMessage());
+                    result.addRecipient(recipient);
+                    result.setFailed(result.getFailed() + 1);
+                    System.err.println("Error enviando a " + normalized + ": " + e.getMessage());
                 }
             }
         }
+
+        return result;
     }
 
     private String buildEmergencyMessage(User user, String location) {
