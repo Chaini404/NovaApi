@@ -16,6 +16,7 @@ import com.cibertec.ApiNova.contact.repository.ContactRepository;
 import com.cibertec.ApiNova.user.model.User;
 import com.cibertec.ApiNova.user.repository.UserRepository;
 import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.Twilio;
 import com.twilio.type.PhoneNumber;
 
 import jakarta.transaction.Transactional;
@@ -34,9 +35,21 @@ public class ContactService {
     private String fromPhone;
     @Value("${twilio.defaultCountryCode:+51}")
     private String defaultCountryCode;
+    @Value("${twilio.accountSid}")
+    private String accountSid;
+    @Value("${twilio.authToken}")
+    private String authToken;
 
     
     public EmergencyAlertResult sendEmergencyWhatsApp(User user, String location) {
+        // Inicializar Twilio con credenciales si están configuradas
+        try {
+            if (accountSid != null && !accountSid.isBlank() && authToken != null && !authToken.isBlank()) {
+                Twilio.init(accountSid, authToken);
+            }
+        } catch (Exception e) {
+            System.err.println("Twilio init error: " + e.getMessage());
+        }
 
         // Obtener todos los contactos de emergencia del usuario
         List<Contact> contacts = contactRepository.findByUserAndEmergencyContactTrue(user);
