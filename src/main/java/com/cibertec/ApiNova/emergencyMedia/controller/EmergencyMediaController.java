@@ -3,6 +3,8 @@ package com.cibertec.ApiNova.emergencyMedia.controller;
 import com.cibertec.ApiNova.emergencyMedia.dtos.request.CreateEmergencyMediaRequest;
 import com.cibertec.ApiNova.emergencyMedia.dtos.response.EmergencyMediaResponse;
 import com.cibertec.ApiNova.emergencyMedia.service.EmergencyMediaService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,12 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/emergency-media")
@@ -19,6 +27,8 @@ import java.util.List;
 public class EmergencyMediaController {
 
     private final EmergencyMediaService emergencyMediaService;
+    @Value("${uploads.dir:uploads}")
+    private String uploadsDir;
 
 
     @Operation(summary = "Create a new emergency media record")
@@ -54,6 +64,13 @@ public class EmergencyMediaController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get media by route location ID")
+    @GetMapping("/location/{locationId}")
+    public ResponseEntity<List<EmergencyMediaResponse>> getMediaByLocation(@PathVariable Long locationId) {
+        List<EmergencyMediaResponse> response = emergencyMediaService.getMediaByLocation(locationId);
+        return ResponseEntity.ok(response);
+    }
+
     // =============================================================
     // UPDATE
     // =============================================================
@@ -75,5 +92,23 @@ public class EmergencyMediaController {
     public ResponseEntity<Void> deleteMedia(@PathVariable Long id) {
         emergencyMediaService.deleteMedia(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Upload raw media file and return public URL")
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        // Ensure upload dir exists
+        Path base = Paths.get(uploadsDir).toAbsolutePath();
+        Files.createDirectories(base);
+
+        String original = file.getOriginalFilename();
+        String ext = (original != null && original.contains(".")) ? original.substring(original.lastIndexOf('.')) : ".bin";
+        String name = UUID.randomUUID().toString() + ext;
+        Path target = base.resolve(name);
+        Files.write(target, file.getBytes());
+
+        // Public URL served by WebMvc resource handler at /uploads/**
+        String publicUrl = "/uploads/" + name;
+        return ResponseEntity.ok(Map.of("url", publicUrl));
     }
 }

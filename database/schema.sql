@@ -48,5 +48,12 @@ CREATE TABLE emergency_media (
     emergency_event_id BIGINT NOT NULL,
     media_type ENUM('AUDIO','VIDEO','PHOTO') NOT NULL,
     storage_url VARCHAR(255) NOT NULL,
-    FOREIGN KEY (emergency_event_id) REFERENCES emergency_events(id) ON DELETE CASCADE
+    emergency_location_id BIGINT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (emergency_event_id) REFERENCES emergency_events(id) ON DELETE CASCADE,
+    FOREIGN KEY (emergency_location_id) REFERENCES emergency_locations(id) ON DELETE SET NULL
 );
+
+-- Índices recomendados
+CREATE INDEX idx_emergency_media_event ON emergency_media(emergency_event_id);
+CREATE INDEX idx_emergency_media_location ON emergency_media(emergency_location_id);

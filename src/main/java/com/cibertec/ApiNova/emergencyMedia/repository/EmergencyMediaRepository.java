@@ -15,4 +15,7 @@ public interface EmergencyMediaRepository extends JpaRepository<EmergencyMedia, 
 
     // Buscar por tipo de medio (AUDIO, VIDEO, PHOTO)
     List<EmergencyMedia> findByMediaType(String mediaType);
+
+    // Buscar medios asociados a una ubicación específica de la ruta
+    List<EmergencyMedia> findByEmergencyLocationId(Long emergencyLocationId);
 }

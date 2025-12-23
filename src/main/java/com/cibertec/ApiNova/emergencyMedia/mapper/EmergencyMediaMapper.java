@@ -12,12 +12,16 @@ public class EmergencyMediaMapper {
     // Convierte entidad a response
     public EmergencyMediaResponse toResponse(EmergencyMedia media) {
         Long emergencyEventId = media.getEmergencyEvent() != null ? media.getEmergencyEvent().getId() : null;
+        Long emergencyLocationId = media.getEmergencyLocation() != null ? media.getEmergencyLocation().getId() : null;
+        String createdAt = media.getCreatedAt() != null ? media.getCreatedAt().toString() : null;
 
         return new EmergencyMediaResponse(
             media.getId(),
             emergencyEventId,
             media.getMediaType(),
-            media.getStorageUrl()
+            media.getStorageUrl(),
+            emergencyLocationId,
+            createdAt
         );
     }
 
@@ -26,6 +30,7 @@ public class EmergencyMediaMapper {
         EmergencyMedia media = new EmergencyMedia();
         media.setMediaType(request.mediaType());
         media.setStorageUrl(request.storageUrl());
+        media.setCreatedAt(java.time.LocalDateTime.now());
         // emergencyEvent se asigna en el service
         return media;
     }

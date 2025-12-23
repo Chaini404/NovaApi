@@ -18,5 +18,8 @@ public record CreateEmergencyMediaRequest(
 
         @NotBlank(message = "Storage URL is required")
         @Size(max = 255, message = "Storage URL cannot exceed 255 characters")
-        String storageUrl
+        String storageUrl,
+
+        // Optional: link media to a specific location in the route
+        Long emergencyLocationId
 ) {}

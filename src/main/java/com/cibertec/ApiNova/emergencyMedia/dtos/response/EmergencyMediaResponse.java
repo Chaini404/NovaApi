@@ -7,6 +7,8 @@ public record EmergencyMediaResponse(
     Long id,
     Long emergencyEventId,
     EmergencyMediaStatus mediaType,
-    String storageUrl
+    String storageUrl,
+    Long emergencyLocationId,
+    String createdAt
     
 ) {}
