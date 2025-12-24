@@ -76,7 +76,7 @@ public class ContactService {
                 String to = "whatsapp:" + normalized;
                 RecipientResult recipient = new RecipientResult(contact.getFullName(), contact.getPhoneNumber(), normalized);
                 result.setAttempted(result.getAttempted() + 1);
-
+                System.out.println("Enviando mensaje WhatsApp a " + normalized);
                 try {
                     Message msg = Message.creator(
                             new PhoneNumber(to),
