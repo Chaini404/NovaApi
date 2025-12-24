@@ -2,7 +2,6 @@ package com.cibertec.ApiNova.emergencyMedia.dtos.request;
 
 import com.cibertec.ApiNova.emergencyMedia.model.type.EmergencyMediaStatus;
 
-import io.swagger.v3.oas.models.media.MediaType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

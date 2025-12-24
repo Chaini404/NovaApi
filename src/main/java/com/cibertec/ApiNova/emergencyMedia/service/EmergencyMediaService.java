@@ -1,7 +1,5 @@
 package com.cibertec.ApiNova.emergencyMedia.service;
 
-import com.cibertec.ApiNova.emergencyEvent.model.EmergencyEvent;
-import com.cibertec.ApiNova.emergencyEvent.repository.EmergencyEventRepository;
 import com.cibertec.ApiNova.emergencyMedia.dtos.request.CreateEmergencyMediaRequest;
 import com.cibertec.ApiNova.emergencyMedia.dtos.response.EmergencyMediaResponse;
 import com.cibertec.ApiNova.emergencyMedia.mapper.EmergencyMediaMapper;
@@ -33,8 +31,7 @@ public class EmergencyMediaService {
     // =============================================================
     // UPDATE MEDIA
     // =============================================================
-        private final EmergencyEventRepository emergencyEventRepository;
-    /*
+   /*
     @Transactional
     public EmergencyMediaResponse updateMedia(Long mediaId, UpdateEmergencyMediaRequest request) {
         EmergencyMedia media = emergencyMediaRepository.findById(mediaId)
